@@ -1,0 +1,186 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DocCard from '../components/DocCard.astro';
+
+const docs = await getCollection('docs');
+
+// Sort docs alphabetically by slug (will be 01, 02, 03... order)
+const sortedDocs = docs.sort((a, b) => a.slug.localeCompare(b.slug));
+
+// Helper to extract title from slug
+function formatTitle(slug: string): string {
+  return slug
+    .replace(/_/g, ' ')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+---
+
+<BaseLayout title="Investor Deck">
+  <main class="main">
+    <div class="container">
+      <header class="hero">
+        <div class="hero-content">
+          <div class="brand-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            Investor Pitch Deck
+          </div>
+          <h1 class="page-title">WAGER BABE</h1>
+          <div class="hero-divider"></div>
+          <p class="page-tagline">
+            The Modern Pay-Per-Head Platform
+          </p>
+          <p class="page-description">
+            Your Book. Smarter. A fully operational sportsbook platform with live betting, automated grading, and real-time analytics.
+          </p>
+        </div>
+      </header>
+
+      <!-- Deck Overview -->
+      <div class="section-header">
+        <span class="label-mono-accent">Pitch Deck Slides</span>
+      </div>
+      <div class="doc-grid">
+        {sortedDocs.map((doc) => (
+          <DocCard
+            title={doc.data.title || formatTitle(doc.slug)}
+            slug={doc.slug}
+            description={doc.data.description}
+          />
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .main {
+    flex: 1;
+  }
+
+  .hero {
+    margin-bottom: var(--space-12);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes expandWidth {
+    from {
+      width: 0;
+    }
+    to {
+      width: 60px;
+    }
+  }
+
+  .hero-content {
+    max-width: 720px;
+  }
+
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-8);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0ms;
+  }
+
+  .brand-badge svg {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .page-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: var(--space-6);
+    color: var(--color-primary);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 100ms;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 4px;
+    background: var(--color-primary);
+    margin-bottom: var(--space-6);
+    animation: expandWidth 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 200ms;
+    width: 0;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  }
+
+  .page-tagline {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+    line-height: 1.4;
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 300ms;
+  }
+
+  .page-description {
+    color: var(--color-text-secondary);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 400ms;
+  }
+
+  @media (max-width: 640px) {
+    .page-tagline {
+      font-size: 1.125rem;
+    }
+
+    .page-description {
+      font-size: 1rem;
+    }
+
+    .brand-badge {
+      font-size: 0.75rem;
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 3px;
+    }
+  }
+
+  .section-header {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    opacity: 0;
+    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 500ms;
+  }
+</style>
